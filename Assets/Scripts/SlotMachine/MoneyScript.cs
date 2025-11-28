@@ -7,6 +7,7 @@ public class MoneyScript : MonoBehaviour
 {
     public TMP_Text text;
 
+    
     public int startingMoney;
 
     private int money;
