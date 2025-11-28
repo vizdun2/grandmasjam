@@ -59,9 +59,6 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        randomizeThings();
-        displayThings();
-
         for (int i = 0; i < switchObjects.Length; i++)
         {
             switchObjects[i].parent = this;
@@ -80,6 +77,9 @@ public class Player : MonoBehaviour
         }
 
         miniGame.gameObject.SetActive(isPlayingMinigame);
+
+        randomizeThings();
+        displayThings();
     }
 
     void slotSpin() // just visualization
@@ -164,25 +164,20 @@ public class Player : MonoBehaviour
 
     AutomatThing randThing()
     {
-        switch (Random.Range(0, 7))
+        float val = Random.Range(0.0f, 1.0f);
+        float current = 0;
+
+        for (int i = 0; i < 7; i++)
         {
-            case 0:
-                return AutomatThing.Banana;
-            case 1:
-                return AutomatThing.Cherry;
-            case 2:
-                return AutomatThing.Orange;
-            case 3:
-                return AutomatThing.PineApple;
-            case 4:
-                return AutomatThing.Peach;
-            case 5:
-                return AutomatThing.Apple;
-            case 6:
-                return AutomatThing.Eggplant;
-            default:
-                return AutomatThing.Banana;
+            AutomatThing t = (AutomatThing)i;
+            current += calcThingWeight(t);
+            if (val <= current)
+            {
+                return t;
+            }
         }
+
+        return AutomatThing.Banana;
     }
 
     public Sprite thingToSprite(AutomatThing thing)
@@ -227,10 +222,10 @@ public class Player : MonoBehaviour
 
     float totalWeights()
     {
-        float sum = 0;
+        float sum = defaultProbability * 7;
         foreach (var ts in thingSwitches)
         {
-            sum += defaultProbability + (ts.up ? 2 : 0);
+            sum += (ts.up ? 2 : 0);
         }
 
         return sum;
