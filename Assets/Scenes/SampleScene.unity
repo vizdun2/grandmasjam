@@ -179,7 +179,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 927b44806dc0db7b9aef44756352d156, type: 3}
+  m_Texture: {fileID: 2800000, guid: 370a664176e844ae8b1d67ebc76f6163, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -753,6 +753,7 @@ MonoBehaviour:
   appleSprite: {fileID: 21300000, guid: c65adcddadfc44498a704bc7f12dba80, type: 3}
   eggplantSprite: {fileID: 21300000, guid: 3a0fdf8b972c57a089f0226d9640f408, type: 3}
   timeToSpin: 0.5
+  rigged: 0
 --- !u!4 &1369505014
 Transform:
   m_ObjectHideFlags: 0
