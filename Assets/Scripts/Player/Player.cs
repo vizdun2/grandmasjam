@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -9,18 +10,24 @@ public class Player : MonoBehaviour
     public SpriteRenderer automatSprite3;
     public MoneyScript money;
 
-    private AutomatThing[] things = {AutomatThing.Banana, AutomatThing.Banana, AutomatThing.Banana};
+
+    private AutomatThing[] things = { AutomatThing.Banana, AutomatThing.Banana, AutomatThing.Banana };
 
     public enum AutomatThing
     {
         Banana,
         Cherry,
         Orange,
-        T4,
-        T5,
-        T6,
-        T7,
+        PineApple,
+        Peach,
+        Apple,
+        Eggplant,
     }
+    float lastSpin;
+    float startedSpinning;
+
+    bool isSpinning = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -29,14 +36,37 @@ public class Player : MonoBehaviour
         displayThings();
     }
 
+
+    void slotSpin() // just visualization
+    {
+        if (Time.time - lastSpin > 0.1f)
+        {
+            lastSpin = Time.time;
+            randomizeThings();
+            displayThings();
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
+
         if (Input.GetKeyDown("space"))
         {
-            randomizeThings();
-            displayThings();
-            cashThings();
+            isSpinning = true;
+            lastSpin = Time.time;
+            startedSpinning = lastSpin;
+        }
+
+
+        if (isSpinning)
+        {
+            slotSpin();
+            if (Time.time - startedSpinning > 4f)
+            {
+                isSpinning = false;
+                cashThings();
+            }
         }
     }
 
@@ -46,7 +76,7 @@ public class Player : MonoBehaviour
         things[1] = randThing();
         things[2] = randThing();
     }
-    
+
     void displayThings()
     {
         setSpriteToThing(automatSprite2, things[0]);
@@ -58,7 +88,7 @@ public class Player : MonoBehaviour
     {
         if (things[0] == things[1] && things[1] == things[2])
         {
-            money.Money += 500;
+            money.Money += 100 * ((int)things[0] + 1);
         }
     }
 
@@ -73,13 +103,13 @@ public class Player : MonoBehaviour
             case 2:
                 return AutomatThing.Orange;
             case 3:
-                return AutomatThing.T4;
+                return AutomatThing.PineApple;
             case 4:
-                return AutomatThing.T5;
+                return AutomatThing.Peach;
             case 5:
-                return AutomatThing.T6;
+                return AutomatThing.Apple;
             case 6:
-                return AutomatThing.T7;
+                return AutomatThing.Eggplant;
             default:
                 return AutomatThing.Banana;
         }
@@ -98,16 +128,16 @@ public class Player : MonoBehaviour
             case AutomatThing.Cherry:
                 sprite.color = Color.red;
                 break;
-            case AutomatThing.T4:
+            case AutomatThing.PineApple:
                 sprite.color = Color.blue;
                 break;
-            case AutomatThing.T5:
+            case AutomatThing.Peach:
                 sprite.color = Color.green;
                 break;
-            case AutomatThing.T6:
+            case AutomatThing.Apple:
                 sprite.color = Color.cyan;
                 break;
-            case AutomatThing.T7:
+            case AutomatThing.Eggplant:
                 sprite.color = Color.magenta;
                 break;
         }
