@@ -16,7 +16,7 @@ public class MoneyScript : MonoBehaviour
         get { return money; }
         set {
             money = value;
-            text.text = $"${money}";
+            text.text = money.ToString("N0");
         }
     }
 

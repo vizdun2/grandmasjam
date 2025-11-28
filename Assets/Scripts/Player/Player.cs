@@ -10,6 +10,15 @@ public class Player : MonoBehaviour
     public SpriteRenderer automatSprite3;
     public MoneyScript money;
 
+    public Sprite bananaSprite;
+    public Sprite cherrySprite;
+    public Sprite orangeSprite;
+    public Sprite pineAppleSprite;
+    public Sprite peachSprite;
+    public Sprite appleSprite;
+    public Sprite eggplantSprite;
+
+    public float timeToSpin = 4f;
 
     private AutomatThing[] things = { AutomatThing.Banana, AutomatThing.Banana, AutomatThing.Banana };
 
@@ -62,7 +71,7 @@ public class Player : MonoBehaviour
         if (isSpinning)
         {
             slotSpin();
-            if (Time.time - startedSpinning > 4f)
+            if (Time.time - startedSpinning > timeToSpin)
             {
                 isSpinning = false;
                 cashThings();
@@ -120,25 +129,25 @@ public class Player : MonoBehaviour
         switch (thing)
         {
             case AutomatThing.Banana:
-                sprite.color = Color.yellow;
+                sprite.sprite = bananaSprite;
                 break;
             case AutomatThing.Orange:
-                sprite.color = Color.yellow + Color.red;
+                sprite.sprite = orangeSprite;
                 break;
             case AutomatThing.Cherry:
-                sprite.color = Color.red;
+                sprite.sprite = cherrySprite;
                 break;
             case AutomatThing.PineApple:
-                sprite.color = Color.blue;
+                sprite.sprite = pineAppleSprite;
                 break;
             case AutomatThing.Peach:
-                sprite.color = Color.green;
+                sprite.sprite = peachSprite;
                 break;
             case AutomatThing.Apple:
-                sprite.color = Color.cyan;
+                sprite.sprite = appleSprite;
                 break;
             case AutomatThing.Eggplant:
-                sprite.color = Color.magenta;
+                sprite.sprite = eggplantSprite;
                 break;
         }
     }
