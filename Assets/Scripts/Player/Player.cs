@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
     public Sprite eggplantSprite;
 
     public float timeToSpin = 4f;
+    public bool rigged = false;
 
     private AutomatThing[] things = { AutomatThing.Banana, AutomatThing.Banana, AutomatThing.Banana };
 
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour
         Apple,
         Eggplant,
     }
+
     float lastSpin;
     float startedSpinning;
 
@@ -59,8 +61,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown("space") && !isSpinning && money.Money >= 100)
         {
             isSpinning = true;
             lastSpin = Time.time;
@@ -81,6 +82,14 @@ public class Player : MonoBehaviour
 
     void randomizeThings()
     {
+        if (rigged)
+        {
+            things[0] = randThing();
+            things[1] = things[0];
+            things[2] = things[0];
+            return;
+        }
+
         things[0] = randThing();
         things[1] = randThing();
         things[2] = randThing();
@@ -98,6 +107,18 @@ public class Player : MonoBehaviour
         if (things[0] == things[1] && things[1] == things[2])
         {
             money.Money += 100 * ((int)things[0] + 1);
+        }
+        else if ((int)things[0] == (int)(things[1] - 1) && (int)things[0] == (int)(things[2] - 2))
+        {
+            money.Money += 100 * ((int)things[0] + 1);
+        }
+        else if (things[0] == things[1] || things[0] == things[2] || things[1] == things[2])
+        {
+            money.Money += 50 * ((int)things[0] + 1);
+        }
+        else
+        {
+            money.Money -= 100;
         }
     }
 
