@@ -95,20 +95,6 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("space") && !isSpinning && money.Money >= 100)
-        {
-            isSpinning = true;
-            lastSpin = Time.time;
-            startedSpinning = lastSpin;
-        }
-
-        if (Input.GetKeyDown("return"))
-        {
-            isPlayingMinigame = !isPlayingMinigame;
-            miniGame.gameObject.SetActive(isPlayingMinigame);
-        }
-
-
         if (isSpinning)
         {
             slotSpin();
@@ -249,5 +235,21 @@ public class Player : MonoBehaviour
             barSprites[i].transform.localScale = new Vector3(barSprites[i].transform.localScale.x,
                 calcThingWeight((AutomatThing)i), barSprites[i].transform.localScale.z);
         }
+    }
+
+    public void leverPulled()
+    {
+        if (!isSpinning && money.Money >= 100)
+        {
+            isSpinning = true;
+            lastSpin = Time.time;
+            startedSpinning = lastSpin;
+        }
+    }
+
+    public void closetOpened()
+    {
+        isPlayingMinigame = !isPlayingMinigame;
+        miniGame.gameObject.SetActive(isPlayingMinigame);
     }
 }
