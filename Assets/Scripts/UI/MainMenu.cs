@@ -7,6 +7,6 @@ public class MainMenu: MonoBehaviour
 {
     public void PlayGame()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene");
     }
 }
