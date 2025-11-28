@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     public SpriteRenderer automatSprite2;
     public SpriteRenderer automatSprite3;
     public MoneyScript money;
-
+    public Guard guard;
     public Sprite bananaSprite;
     public Sprite cherrySprite;
     public Sprite orangeSprite;

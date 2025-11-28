@@ -5,11 +5,8 @@ using UnityEngine;
 
 public class MoneyScript : MonoBehaviour
 {
-    public TMP_Text text;
-
-    
+    public TMP_Text text;   
     public int startingMoney;
-
     private int money;
     public int Money
     {
