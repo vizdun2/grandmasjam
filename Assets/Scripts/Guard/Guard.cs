@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,15 +27,14 @@ public class Guard : MonoBehaviour
     public float angerLimit = 100f;
 
     public Player player;
-
-    public TMP_Text stateText;
     public GameObject healthBar;
-
     bool noticedYouAreNotSpinning = false;
     float noticedYouAreNotSpinningAt;
-
     float stateDuration = 0;
-
+    public Sprite[] turnAnimationFrames; // 4 sprity otáčení
+    public float turnFrameDuration = 0.07f;
+    bool isAnimating = false;
+    Coroutine stateChangeCoroutine;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,7 +45,6 @@ public class Guard : MonoBehaviour
     {
         UpdateAngerLevel(Time.deltaTime);
         CycleState();
-        stateText.text = $"Guard is {currentState}";
         UpdateGuardFace();
     }
 
@@ -97,8 +96,21 @@ public class Guard : MonoBehaviour
 
     void ChangeState(GuardState newState)
     {
+        if (currentState == newState) return;
+
+        // stop předchozí animace, pokud běží
+        if (stateChangeCoroutine != null)
+        {
+            StopCoroutine(stateChangeCoroutine);
+            stateChangeCoroutine = null;
+        }
+
+        GuardState oldState = currentState;
         currentState = newState;
-        UpdateGuardFace();
+        stateDuration = 0f;
+
+        // spustíme animaci přechodu
+        stateChangeCoroutine = StartCoroutine(PlayTurnAnimation(oldState, newState));
     }
 
     void CycleState()
@@ -140,7 +152,6 @@ public class Guard : MonoBehaviour
                 break;
 
         }
-        stateText.text = $"Guard is {currentState}";
     }
 
     void UpdateHealthBar()
@@ -150,9 +161,17 @@ public class Guard : MonoBehaviour
 
     void UpdateGuardFace()
     {
+        // když právě přehrávám animaci, nech to být
+        if (isAnimating) return;
+
+        UpdateGuardFaceImmediate();
+    }
+
+    void UpdateGuardFaceImmediate()
+    {
         Sprite newFace = null;
 
-        // Pokud je hodně naštvaný, zobraz angry face
+        // hodně naštvaný → angry
         if (angerLevel > angerLimit * .5f)
         {
             newFace = faceAngry;
@@ -184,5 +203,25 @@ public class Guard : MonoBehaviour
             color.a = 0.9f;
             guardFaceRenderer.color = color;
         }
+    }
+
+    IEnumerator PlayTurnAnimation(GuardState from, GuardState to)
+    {
+        isAnimating = true;
+        if (guardFaceRenderer != null && turnAnimationFrames != null && turnAnimationFrames.Length > 0)
+        {
+            for (int i = 0; i < turnAnimationFrames.Length; i++)
+            {
+                if (turnAnimationFrames[i] == null) continue;
+
+                guardFaceRenderer.sprite = turnAnimationFrames[i];
+                yield return new WaitForSeconds(turnFrameDuration);
+            }
+        }
+
+        UpdateGuardFaceImmediate();
+
+        isAnimating = false;
+        stateChangeCoroutine = null;
     }
 }
