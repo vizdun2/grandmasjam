@@ -151,12 +151,15 @@ public class Player : MonoBehaviour
         {
             if (currentCable.fromtFruitWire == null || currentCable.toPosWire == null)
             {
-                currentCable.cable.to = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 if (currentCable.fromtFruitWire != null)
                     currentCable.cable.from =
                         fruitWires[(int)currentCable.fromtFruitWire].gameObject.transform.position;
+                else
+                    currentCable.cable.from = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 if (currentCable.toPosWire != null)
-                    currentCable.cable.from = posWires[(int)currentCable.toPosWire].gameObject.transform.position;
+                    currentCable.cable.to = posWires[(int)currentCable.toPosWire].gameObject.transform.position;
+                else
+                    currentCable.cable.to = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             }
         }
 
