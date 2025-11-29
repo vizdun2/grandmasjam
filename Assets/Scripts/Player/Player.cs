@@ -1,14 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour
 {
     public SpriteRenderer automatSprite1;
     public SpriteRenderer automatSprite2;
     public SpriteRenderer automatSprite3;
+    public SpriteRenderer slotsBackground;
     public MoneyScript money;
     public Guard guard;
     public Sprite bananaSprite;
@@ -18,6 +21,8 @@ public class Player : MonoBehaviour
     public Sprite peachSprite;
     public Sprite appleSprite;
     public Sprite eggplantSprite;
+    
+    public Sprite[] movingThingsSprites;
 
     public Transform miniGame;
 
@@ -56,31 +61,14 @@ public class Player : MonoBehaviour
         public bool up;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        // for (int i = 0; i < switchObjects.Length; i++)
-        // {
-        //     switchObjects[i].parent = this;
-        //     switchObjects[i].id = i;
-        //
-        //     ThingSwitch ts = new ThingSwitch
-        //     {
-        //         leftBonus = randThing(),
-        //         rightBonus = randThing(),
-        //         up = false
-        //     };
-        //     thingSwitches.Add(ts);
-        //     setSwitchFlipped(i, ts.up);
-        //     switchObjects[i].leftBonusSprite.sprite = thingToSprite(ts.leftBonus);
-        //     switchObjects[i].rightBonusSprite.sprite = thingToSprite(ts.rightBonus);
-        // }
-
         miniGame.gameObject.SetActive(isPlayingMinigame);
 
         randomizeThings();
         shuffleCables();
         displayThings();
+        slotsBackground.sprite = movingThingsSprites[0];
     }
 
     void slotSpin() // just visualization
@@ -88,13 +76,11 @@ public class Player : MonoBehaviour
         if (Time.time - lastSpin > 0.1f)
         {
             lastSpin = Time.time;
-            randomizeThings();
-            displayThings();
+            slotsBackground.sprite = movingThingsSprites[Random.Range(1, movingThingsSprites.Length)];
             // guard.UpdateAngerLevel(0.1f);
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (isSpinning)
@@ -103,6 +89,13 @@ public class Player : MonoBehaviour
             if (Time.time - startedSpinning > timeToSpin)
             {
                 isSpinning = false;
+                slotsBackground.sprite = movingThingsSprites[0];
+                
+                randomizeThings();
+                displayThings();
+                automatSprite1.enabled = true;
+                automatSprite2.enabled = true;
+                automatSprite3.enabled = true;
                 cashThings();
             }
         }
@@ -217,18 +210,6 @@ public class Player : MonoBehaviour
         sprite.sprite = thingToSprite(thing);
     }
 
-    // void setSwitchFlipped(int id, bool up)
-    // {
-    //     thingSwitches[id].up = up;
-    //     switchObjects[id].switchSprite.color = thingSwitches[id].up ? Color.white : Color.gray;
-    //     redrawBars();
-    // }
-
-    // public void switchSwitch(int id)
-    // {
-    //     setSwitchFlipped(id, !thingSwitches[id].up);
-    // }
-
     float totalWeights()
     {
         float sum = defaultProbability * 7;
@@ -250,16 +231,7 @@ public class Player : MonoBehaviour
 
         return (sum == 0) ? 0 : (sum / totalWeights());
     }
-
-    void redrawBars()
-    {
-        for (int i = 0; i < 7; i++)
-        {
-            barSprites[i].transform.localScale = new Vector3(barSprites[i].transform.localScale.x,
-                calcThingWeight((AutomatThing)i), barSprites[i].transform.localScale.z);
-        }
-    }
-
+    
     public void leverPulled()
     {
         if (!isSpinning && money.Money >= 100)
@@ -267,6 +239,9 @@ public class Player : MonoBehaviour
             isSpinning = true;
             lastSpin = Time.time;
             startedSpinning = lastSpin;
+            automatSprite1.enabled = false;
+            automatSprite2.enabled = false;
+            automatSprite3.enabled = false;
         }
     }
 
