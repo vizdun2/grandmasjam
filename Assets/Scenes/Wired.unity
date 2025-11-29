@@ -3237,6 +3237,7 @@ MonoBehaviour:
     threeOfKind: 500
     twoOfKind: 200
     straight: 500
+  timeToShuffleSeconds: 60
   automatSprite1: {fileID: 1189314550}
   automatSprite2: {fileID: 2085532771}
   automatSprite3: {fileID: 1022252510}
@@ -3274,6 +3275,7 @@ MonoBehaviour:
   - {fileID: 1295223990}
   - {fileID: 1813135116}
   - {fileID: 2110841300}
+  meanTimeToEvent: 2
   fruitWires:
   - {fileID: 1256806616}
   - {fileID: 766344716}
@@ -3319,6 +3321,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f3464d28624d0ba6c8bd0154bec445e4, type: 3}
   - {fileID: 8300000, guid: 28c208f60b4dd7388a3b270491c9daca, type: 3}
   subtitleText: {fileID: 1518974608}
+  bubble: {fileID: 1925459025}
+  subTime: 0.2
+  player: {fileID: 1369505013}
 --- !u!82 &1369505016
 AudioSource:
   m_ObjectHideFlags: 0

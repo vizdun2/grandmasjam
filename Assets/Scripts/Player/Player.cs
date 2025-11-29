@@ -95,6 +95,10 @@ public class Player : MonoBehaviour
 
     private float lastShuffledCables = 0;
 
+    private float lastTriedEvent = 0;
+    private float timeToEventSeconds = 30;
+    public int meanTimeToEvent = 2;
+
     void Start()
     {
         monologueHandler = GetComponent<MonologueHandler>();
@@ -157,6 +161,16 @@ public class Player : MonoBehaviour
 
         if (Time.time - lastShuffledCables > timeToShuffleSeconds)
             shuffleCables();
+
+        if (Time.time - lastTriedEvent > timeToEventSeconds)
+        {
+            lastTriedEvent = Time.time;
+
+            if (Random.Range(0, meanTimeToEvent) == 0)
+            {
+                monologueHandler.maybePushEvent((MonologueHandler.MailEvent)Random.Range(0, 4));
+            }
+        }
 
 
         if (Input.GetKeyDown("space"))
@@ -468,5 +482,25 @@ public class Player : MonoBehaviour
         money.Money = oldmoney;
 
         Debug.Log($"Average PnL with this config and wires: ${pnls.Average()}");
+    }
+
+    private int duchodLevels = 500;
+    public void applyEvent(MonologueHandler.MailEvent me)
+    {
+        switch (me)
+        {
+            case MonologueHandler.MailEvent.Duchod:
+                money.Money += duchodLevels;
+                break;
+            case MonologueHandler.MailEvent.Babis:
+                money.Money += 5_000;
+                break;
+            case MonologueHandler.MailEvent.MinusDuchod:
+                duchodLevels -= 100;
+                break;
+            case MonologueHandler.MailEvent.PlusDuchod:
+                duchodLevels += 100;
+                break;
+        }
     }
 }
