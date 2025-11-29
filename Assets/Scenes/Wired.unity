@@ -3476,7 +3476,7 @@ MonoBehaviour:
   timeToSpin: 5
   rigged: 0
   defaultProbability: 0.5
-  grandmaStartsTalking: 15
+  grandmaStartsTalking: 5
   switchObjects:
   - {fileID: 228754974}
   - {fileID: 922251315}

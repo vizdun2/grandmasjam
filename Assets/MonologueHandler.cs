@@ -4,6 +4,22 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
+public enum EventEffect
+{
+    Babis,
+    Duchod,
+    PlusDuchod,
+    MinusDuchod,
+    None
+}
+
+public struct GameEvent
+{
+    public string monologue;
+    public EventEffect effect;
+    public AudioClip audioClip;
+}
+
 public class MonologueHandler : MonoBehaviour
 {
     public AudioClip[] tutorialClips; // put clips as if indexed by enum
@@ -18,13 +34,6 @@ public class MonologueHandler : MonoBehaviour
         "Oh no! The guard is looking my way. I have to stop tampering with the slot machine."
     };
 
-    public enum MailEvent
-    {
-        Babis,
-        Duchod,
-        PlusDuchod,
-        MinusDuchod,
-    }
 
     string[,] EVENT_LINES =
     {
@@ -34,92 +43,95 @@ public class MonologueHandler : MonoBehaviour
         { "MinusDuchod1", "MinusDuchod2", "MinusDuchod3" },
     };
 
-    string eventToLine(MailEvent me)
-    {
-        return EVENT_LINES[(int)me, Random.Range(0, 3)];
-    }
-
-    private MailEvent? pendingEvent = null;
 
     private AudioSource grandmaVoice;
     public TextMeshProUGUI subtitleText;
 
     private float lastChangedSubtitleText = 0;
+    List<GameEvent> eventQueue = new();
 
     public GameObject bubble;
-    
+
     public float subTime = 0.2f;
     public Player player;
+    bool isShown = false;
 
-    private bool isShownRn
-    {
-        get { return bubble.activeInHierarchy; }
-        set { bubble.SetActive(value); }
-    }
 
-// Start is called before the first frame update
+
+    // Start is called before the first frame update
     void Start()
     {
         grandmaVoice = gameObject.GetComponent<AudioSource>();
-        isShownRn = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+
         if (Time.time - lastChangedSubtitleText > subtitleText.text.Count() * subTime)
         {
-            popTutorialSubs();
+            if (!IsQueueEmpty())
+            {
+                popEvent();
+            }
+            else
+            {
+                subtitleText.text = "";
+            }
         }
     }
 
-    public void maybePushEvent(MailEvent maile)
-    {
-        if (pendingEvent != null)
-            return;
-        else if (isShownRn)
-        {
-            pendingEvent = maile;
-        }
-        else
-        {
-            pushSomeSubs("Postak", eventToLine(maile));
-            player.applyEvent((MailEvent)maile);
-        }
-    }
 
-    private void pushSomeSubs(string kdo, string co)
+    private void popEvent()
     {
-        subtitleText.text = co;
         lastChangedSubtitleText = Time.time;
-        isShownRn = true;
+        GameEvent outEvent = eventQueue[0];
+        eventQueue.RemoveAt(0);
+        subtitleText.text = outEvent.monologue;
+        handleEventEffect(outEvent.effect);
+        isShown = true;
+        if (outEvent.audioClip != null)
+        {
+            grandmaVoice.PlayOneShot(outEvent.audioClip);
+        }
     }
 
-    private void popTutorialSubs()
+    private void handleEventEffect(EventEffect eventEffect)
     {
-        if (pendingEvent != null)
+        if (eventEffect != EventEffect.None)
         {
-            pushSomeSubs("Postak", eventToLine((MailEvent)pendingEvent));
-            player.applyEvent((MailEvent)pendingEvent);
+            player.applyEvent(eventEffect);
         }
-        else
+    }
+
+    public void PushTutorial(TutorialMonologueCall call)
+    {
+        string subs = tutorialSubs[(int)call];
+        GameEvent gameEvent = new() { monologue = subs, effect = EventEffect.None, audioClip = tutorialClips[(int)call] };
+        eventQueue.Add(gameEvent);
+
+    }
+
+    public void PushMail()
+    {
+        EventEffect effectPick = (EventEffect)Random.Range(0, 4);
+        string says = EVENT_LINES[(int)effectPick, Random.Range(0, 2)];
+        GameEvent gameEvent = new() { effect = effectPick, monologue = says };
+        eventQueue.Add(gameEvent);
+    }
+
+
+    public void PlayFuckup(FuckupMonologueCall call)
+    {
+        int index = 3 + (int)call;
+        if (IsQueueEmpty() && !player.playedTutorial[index] && Time.time - lastChangedSubtitleText > subtitleText.text.Count() * subTime)
         {
             lastChangedSubtitleText = Time.time;
-            subtitleText.text = "";
-            isShownRn = false;
+            player.playedTutorial[index] = true;
+            grandmaVoice.PlayOneShot(tutorialClips[index]);
+            subtitleText.text = tutorialSubs[index];
         }
     }
 
-    private void pushTutorialSubs(TutorialMonologueCall call)
-    {
-        subtitleText.text = tutorialSubs[(int)call];
-        lastChangedSubtitleText = Time.time;
-        isShownRn = true;
-    }
-
-    public void PlayTutorial(TutorialMonologueCall call)
-    {
-        pushTutorialSubs(call);
-        grandmaVoice.PlayOneShot(tutorialClips[(int)call]);
-    }
+    public bool IsQueueEmpty() => eventQueue.Count() == 0;
 }

@@ -56,7 +56,7 @@ public class Guard : MonoBehaviour
             if (player.GetHowLongIsPlayingMinigame() > 2f)
             {
                 angerLevel += delta * 8;
-                player.Tutorial(TutorialMonologueCall.NoticeGuardNoticeYouPlayingMinigame);
+                player.GetComponent<MonologueHandler>().PlayFuckup(FuckupMonologueCall.NoticeGuardNoticeYouPlayingMinigame);
             }
             if (player.GetIsSpinning())
             { // bude nasranej na to ze cheatujes maty
@@ -64,7 +64,7 @@ public class Guard : MonoBehaviour
                 if (player.GetRiggedAmount() > 0)
                 {
                     angerLevel += delta * 4 * player.GetRiggedAmount();
-                    player.Tutorial(TutorialMonologueCall.NoticeGuardNoticeMinigameEffect);
+                    player.GetComponent<MonologueHandler>().PlayFuckup(FuckupMonologueCall.NoticeGuardNoticeMinigameEffect);
                 }
                 else
                     angerLevel -= delta * 4;
@@ -79,7 +79,7 @@ public class Guard : MonoBehaviour
                 }
                 if (Time.time - noticedYouAreNotSpinningAt > 5f)
                 {
-                    player.Tutorial(TutorialMonologueCall.NoticeGuardNoticeNotPlaying);
+                    player.GetComponent<MonologueHandler>().PlayFuckup(FuckupMonologueCall.NoticeGuardNoticeNotPlaying);
                     angerLevel += delta * 2;
                 }
             }

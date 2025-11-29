@@ -13,6 +13,11 @@ public enum TutorialMonologueCall
     NoticeCouldOpenCloset,
     EnterMinigame,
     NoticeMinigameEffect,
+
+}
+
+public enum FuckupMonologueCall
+{
     NoticeGuardNoticeNotPlaying,
     NoticeGuardNoticeMinigameEffect,
     NoticeGuardNoticeYouPlayingMinigame,
@@ -45,7 +50,7 @@ public class Player : MonoBehaviour
     public Sprite peachSprite;
     public Sprite appleSprite;
     public Sprite eggplantSprite;
-    private bool[] playedTutorial = new bool[6];
+    public bool[] playedTutorial = new bool[6];
 
     public Sprite[] movingThingsSprites;
 
@@ -95,10 +100,10 @@ public class Player : MonoBehaviour
     private float lastPlayedTutorial = 0;
 
     private float lastShuffledCables = 0;
-
     private float lastTriedEvent = 0;
     private float timeToEventSeconds = 30;
     public int meanTimeToEvent = 2;
+
 
     void Start()
     {
@@ -166,16 +171,14 @@ public class Player : MonoBehaviour
             lastShuffledCables = Time.time;
         }
 
+
         if (Time.time - lastTriedEvent > timeToEventSeconds)
         {
             lastTriedEvent = Time.time;
 
             if (Random.Range(0, meanTimeToEvent) == 0)
-            {
-                monologueHandler.maybePushEvent((MonologueHandler.MailEvent)Random.Range(0, 4));
-            }
+                monologueHandler.PushMail();
         }
-
 
         if (isPlayingMinigame)
             playingMinigameFor += Time.deltaTime;
@@ -457,7 +460,7 @@ public class Player : MonoBehaviour
         {
             lastPlayedTutorial = Time.time;
             playedTutorial[(int)tutorial] = true;
-            monologueHandler.PlayTutorial(tutorial);
+            monologueHandler.PushTutorial(tutorial);
         }
     }
 
@@ -491,20 +494,20 @@ public class Player : MonoBehaviour
     }
 
     private int duchodLevels = 500;
-    public void applyEvent(MonologueHandler.MailEvent me)
+    public void applyEvent(EventEffect me)
     {
         switch (me)
         {
-            case MonologueHandler.MailEvent.Duchod:
+            case EventEffect.Duchod:
                 money.Money += duchodLevels;
                 break;
-            case MonologueHandler.MailEvent.Babis:
+            case EventEffect.Babis:
                 money.Money += 5_000;
                 break;
-            case MonologueHandler.MailEvent.MinusDuchod:
+            case EventEffect.MinusDuchod:
                 duchodLevels -= 100;
                 break;
-            case MonologueHandler.MailEvent.PlusDuchod:
+            case EventEffect.PlusDuchod:
                 duchodLevels += 100;
                 break;
         }
