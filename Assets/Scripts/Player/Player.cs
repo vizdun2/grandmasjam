@@ -59,26 +59,27 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < switchObjects.Length; i++)
-        {
-            switchObjects[i].parent = this;
-            switchObjects[i].id = i;
-
-            ThingSwitch ts = new ThingSwitch
-            {
-                leftBonus = randThing(),
-                rightBonus = randThing(),
-                up = false
-            };
-            thingSwitches.Add(ts);
-            setSwitchFlipped(i, ts.up);
-            switchObjects[i].leftBonusSprite.sprite = thingToSprite(ts.leftBonus);
-            switchObjects[i].rightBonusSprite.sprite = thingToSprite(ts.rightBonus);
-        }
+        // for (int i = 0; i < switchObjects.Length; i++)
+        // {
+        //     switchObjects[i].parent = this;
+        //     switchObjects[i].id = i;
+        //
+        //     ThingSwitch ts = new ThingSwitch
+        //     {
+        //         leftBonus = randThing(),
+        //         rightBonus = randThing(),
+        //         up = false
+        //     };
+        //     thingSwitches.Add(ts);
+        //     setSwitchFlipped(i, ts.up);
+        //     switchObjects[i].leftBonusSprite.sprite = thingToSprite(ts.leftBonus);
+        //     switchObjects[i].rightBonusSprite.sprite = thingToSprite(ts.rightBonus);
+        // }
 
         miniGame.gameObject.SetActive(isPlayingMinigame);
 
         randomizeThings();
+        shuffleCables();
         displayThings();
     }
 
@@ -89,7 +90,7 @@ public class Player : MonoBehaviour
             lastSpin = Time.time;
             randomizeThings();
             displayThings();
-            guard.UpdateAngerLevel(0.1f);
+            // guard.UpdateAngerLevel(0.1f);
         }
     }
 
@@ -105,6 +106,22 @@ public class Player : MonoBehaviour
                 cashThings();
             }
         }
+
+        if (currentCable != null)
+        {
+            if (currentCable.fromtFruitWire == null || currentCable.toPosWire == null)
+            {
+                currentCable.cable.to = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                if (currentCable.fromtFruitWire != null)
+                    currentCable.cable.from =
+                        fruitWires[(int)currentCable.fromtFruitWire].gameObject.transform.position;
+                if (currentCable.toPosWire != null)
+                    currentCable.cable.from = posWires[(int)currentCable.toPosWire].gameObject.transform.position;
+            }
+        }
+
+        if (Input.GetKeyDown("space"))
+            shuffleCables();
     }
 
     void randomizeThings()
@@ -117,9 +134,14 @@ public class Player : MonoBehaviour
             return;
         }
 
-        things[0] = randThing();
-        things[1] = randThing();
-        things[2] = randThing();
+        for (int i = 0; i < 3; i++)
+            things[i] = randThing();
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (cableWireIndex.ContainsKey(i))
+                things[shuffledWires[i]] = shuffledThings[(int)cableWireIndex[i].fromtFruitWire];
+        }
     }
 
     void displayThings()
@@ -195,17 +217,17 @@ public class Player : MonoBehaviour
         sprite.sprite = thingToSprite(thing);
     }
 
-    void setSwitchFlipped(int id, bool up)
-    {
-        thingSwitches[id].up = up;
-        switchObjects[id].switchSprite.color = thingSwitches[id].up ? Color.white : Color.gray;
-        redrawBars();
-    }
+    // void setSwitchFlipped(int id, bool up)
+    // {
+    //     thingSwitches[id].up = up;
+    //     switchObjects[id].switchSprite.color = thingSwitches[id].up ? Color.white : Color.gray;
+    //     redrawBars();
+    // }
 
-    public void switchSwitch(int id)
-    {
-        setSwitchFlipped(id, !thingSwitches[id].up);
-    }
+    // public void switchSwitch(int id)
+    // {
+    //     setSwitchFlipped(id, !thingSwitches[id].up);
+    // }
 
     float totalWeights()
     {
@@ -252,5 +274,128 @@ public class Player : MonoBehaviour
     {
         isPlayingMinigame = !isPlayingMinigame;
         miniGame.gameObject.SetActive(isPlayingMinigame);
+    }
+
+    class CableConnection
+    {
+        public int? fromtFruitWire;
+        public int? toPosWire;
+        public Cable cable;
+    }
+
+    public WireEnd[] fruitWires;
+    public WireEnd[] posWires;
+    public GameObject cablePrefab;
+    CableConnection currentCable = null;
+    Dictionary<int, CableConnection> cableWireIndex = new Dictionary<int, CableConnection>();
+    Dictionary<int, CableConnection> cableFruitIndex = new Dictionary<int, CableConnection>();
+    AutomatThing[] shuffledThings = new AutomatThing[4];
+    int[] shuffledWires = new int[3];
+
+    void shuffleCables()
+    {
+        if (currentCable != null)
+        {
+            Destroy(currentCable.cable.gameObject);
+            currentCable = null;
+        }
+
+        foreach (var cb in cableWireIndex)
+            Destroy(cb.Value.cable.gameObject);
+        foreach (var cb in cableFruitIndex)
+            Destroy(cb.Value.cable.gameObject);
+        cableWireIndex.Clear();
+        cableFruitIndex.Clear();
+
+        for (int i = 0; i < 4; i++)
+            shuffledThings[i] = (AutomatThing)Random.Range(0, 7);
+
+        List<int> wireBag = new List<int>(new[] { 0, 1, 2 });
+        for (int i = 0; i < 3; i++)
+        {
+            int idx = Random.Range(0, wireBag.Count);
+            shuffledWires[i] = wireBag[idx];
+            wireBag.RemoveAt(idx);
+        }
+    }
+
+    void finishCurrentCable()
+    {
+        if (currentCable != null && currentCable.fromtFruitWire != null && currentCable.toPosWire != null)
+        {
+            cableFruitIndex[(int)currentCable.fromtFruitWire] = currentCable;
+            cableWireIndex[(int)currentCable.toPosWire] = currentCable;
+            currentCable.cable.from = fruitWires[(int)currentCable.fromtFruitWire].gameObject.transform.position;
+            currentCable.cable.to = posWires[(int)currentCable.toPosWire].gameObject.transform.position;
+            currentCable = null;
+        }
+    }
+
+    public void clickedPosWire(int id)
+    {
+        if (currentCable == null)
+        {
+            if (!cableWireIndex.ContainsKey(id))
+            {
+                currentCable = new CableConnection();
+                currentCable.toPosWire = id;
+                GameObject cb = Instantiate(cablePrefab);
+                cb.transform.SetParent(miniGame);
+                cb.transform.localPosition = new Vector3(0, 0, -0.05f);
+                currentCable.cable = cb.GetComponent<Cable>();
+            }
+            else
+            {
+                currentCable = cableWireIndex[id];
+                cableFruitIndex.Remove((int)currentCable.fromtFruitWire);
+                cableWireIndex.Remove((int)currentCable.toPosWire);
+                currentCable.toPosWire = null;
+            }
+        }
+        else if (currentCable.toPosWire == null && !cableWireIndex.ContainsKey(id))
+        {
+            currentCable.toPosWire = id;
+        }
+        else
+        {
+            Destroy(currentCable.cable.gameObject);
+            currentCable = null;
+        }
+
+        finishCurrentCable();
+    }
+
+    public void clickedFruitWire(int id)
+    {
+        if (currentCable == null)
+        {
+            if (!cableFruitIndex.ContainsKey(id))
+            {
+                currentCable = new CableConnection();
+                currentCable.fromtFruitWire = id;
+                GameObject cb = Instantiate(cablePrefab);
+                cb.transform.SetParent(miniGame);
+                cb.transform.localPosition = new Vector3(0, 0, -0.05f);
+                currentCable.cable = cb.GetComponent<Cable>();
+            }
+            else
+            {
+                currentCable = cableFruitIndex[id];
+                cableFruitIndex.Remove((int)currentCable.fromtFruitWire);
+                cableWireIndex.Remove((int)currentCable.toPosWire);
+                currentCable.fromtFruitWire = null;
+            }
+        }
+        else if (currentCable.fromtFruitWire == null && !cableFruitIndex.ContainsKey(id))
+        {
+            currentCable.fromtFruitWire = id;
+        }
+        else
+        {
+            Destroy(currentCable.cable.gameObject);
+            currentCable = null;
+        }
+
+        finishCurrentCable();
     }
 }

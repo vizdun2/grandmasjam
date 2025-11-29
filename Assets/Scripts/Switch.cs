@@ -20,6 +20,6 @@ public class Switch : MonoBehaviour
 
     private void OnMouseDown()
     {
-        parent.switchSwitch(id);
+        // parent.switchSwitch(id);
     }
 }
