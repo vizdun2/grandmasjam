@@ -206,12 +206,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 34217046}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.02, y: -4.07, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.6754967, y: -4.357616, z: 0}
+  m_LocalScale: {x: 0.66225165, y: 0.66225165, z: 0.66225165}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1365825428}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &102916398
 GameObject:
@@ -948,13 +948,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 536925145}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.21, y: 1.93, z: -0.09}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.7880795, y: -0.38410598, z: -0.05960265}
+  m_LocalScale: {x: 0.66225165, y: 0.66225165, z: 0.66225165}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 934309761}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1365825428}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &536925147
 BoxCollider2D:
@@ -2884,6 +2884,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1365825428}
+  - component: {fileID: 1365825429}
   m_Layer: 0
   m_Name: Automat
   m_TagString: Untagged
@@ -2909,8 +2910,24 @@ Transform:
   - {fileID: 1022252509}
   - {fileID: 585775478}
   - {fileID: 1915406361}
+  - {fileID: 536925146}
+  - {fileID: 34217049}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1365825429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365825427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97960880e86722c1a8583d58a352c83d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 1.5
+  diff: {x: 0, y: 0.04}
 --- !u!1 &1369505012
 GameObject:
   m_ObjectHideFlags: 0
@@ -4523,5 +4540,3 @@ SceneRoots:
   - {fileID: 820483524}
   - {fileID: 1365825428}
   - {fileID: 1871444175}
-  - {fileID: 536925146}
-  - {fileID: 34217049}
