@@ -54,6 +54,7 @@ public class Player : MonoBehaviour
     public float timeToSpin = 4f;
     public bool rigged = false;
     public float defaultProbability = 0.5f;
+    public float grandmaStartsTalking;
 
     private AutomatThing[] things = { AutomatThing.Banana, AutomatThing.Banana, AutomatThing.Banana };
 
@@ -156,11 +157,10 @@ public class Player : MonoBehaviour
         }
 
         if (Time.time - lastShuffledCables > timeToShuffleSeconds)
+        {
             shuffleCables();
-
-
-        if (Input.GetKeyDown("space"))
-            shuffleCables();
+            lastShuffledCables = Time.time;
+        }
 
         if (isPlayingMinigame)
             playingMinigameFor += Time.deltaTime;
@@ -208,10 +208,13 @@ public class Player : MonoBehaviour
 
         return 0;
     }
-
-    void cashThings()
+    void precashThings()
     {
         money.Money -= economy.bet;
+    }
+    void cashThings()
+    {
+
         money.Money += thingsValue();
     }
 
@@ -287,6 +290,7 @@ public class Player : MonoBehaviour
     {
         if (!isSpinning && money.Money >= 100)
         {
+            precashThings();
             isSpinning = true;
             lastSpin = Time.time;
             startedSpinning = lastSpin;
@@ -350,6 +354,7 @@ public class Player : MonoBehaviour
             shuffledWires[i] = wireBag[idx];
             wireBag.RemoveAt(idx);
         }
+
     }
 
     void finishCurrentCable()
@@ -460,13 +465,13 @@ public class Player : MonoBehaviour
         for (int i = 0; i < 10_000; i++)
         {
             money.Money = 1000;
+            precashThings();
             randomizeThings();
             cashThings();
             pnls.Add(money.Money - 1000);
         }
 
-        money.Money = oldmoney;
+        Debug.Log($"Average PnL with this config and wires: ${pnls.Average()}"); money.Money = oldmoney;
 
-        Debug.Log($"Average PnL with this config and wires: ${pnls.Average()}");
     }
 }
