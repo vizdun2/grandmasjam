@@ -12,6 +12,13 @@ public class Guard : MonoBehaviour
         WillNotSeePlayer
     }
 
+    public SpriteRenderer guardFaceRenderer;
+    public Sprite faceSeesPlayer;
+    public Sprite faceDoesNotSeePlayer;
+    public Sprite faceLookRight;
+    public Sprite faceLookLeft;
+    public Sprite faceAngry;
+
     public GuardState currentState = GuardState.SeesPlayer;
 
     public float angerLevel = 0f;
@@ -39,6 +46,7 @@ public class Guard : MonoBehaviour
         UpdateAngerLevel(Time.deltaTime);
         CycleState();
         stateText.text = $"Guard is {currentState}";
+        UpdateGuardFace();
     }
 
     public void UpdateAngerLevel(float delta)
@@ -90,6 +98,7 @@ public class Guard : MonoBehaviour
     void ChangeState(GuardState newState)
     {
         currentState = newState;
+        UpdateGuardFace();
     }
 
     void CycleState()
@@ -137,5 +146,39 @@ public class Guard : MonoBehaviour
     void UpdateHealthBar()
     {
         healthBar.transform.localScale = new Vector2(angerLevel / angerLimit, healthBar.transform.localScale.y);
+    }
+
+    void UpdateGuardFace()
+    {
+        Sprite newFace = null;
+
+        // Pokud je hodně naštvaný, zobraz angry face
+        if (angerLevel > angerLimit * .5f)
+        {
+            newFace = faceAngry;
+        }
+        else
+        {
+            switch (currentState)
+            {
+                case GuardState.SeesPlayer:
+                    newFace = faceSeesPlayer;
+                    break;
+                case GuardState.DoesNotSeePlayer:
+                    newFace = faceDoesNotSeePlayer;
+                    break;
+                case GuardState.WillSeePlayer:
+                    newFace = faceLookRight;
+                    break;
+                case GuardState.WillNotSeePlayer:
+                    newFace = faceLookLeft;
+                    break;
+            }
+        }
+
+        if (guardFaceRenderer != null && newFace != null)
+        {
+            guardFaceRenderer.sprite = newFace;
+        }
     }
 }
