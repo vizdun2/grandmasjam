@@ -37,8 +37,8 @@ public class MonologueHandler : MonoBehaviour
 
     string[,] EVENT_LINES =
     {
-        { "Babis1", "Babis2", "Babis3" },
-        { "Duchod1", "Duchod2", "Duchod3" },
+        { "Andrej Babis is buying voters! You received money.", "Andrej Babis is buying voters! You received money.", "Andrej Babis is buying voters! You received money." },
+        { "You received your retirement pay!", "You received your retirement pay", "You received your retirement pay" },
         { "PlusDuchod1", "PlusDuchod2", "PlusDuchod3" },
         { "MinusDuchod1", "MinusDuchod2", "MinusDuchod3" },
     };
@@ -51,10 +51,10 @@ public class MonologueHandler : MonoBehaviour
     List<GameEvent> eventQueue = new();
 
     public GameObject bubble;
+    public GameObject megafon;
 
     public float subTime = 0.2f;
     public Player player;
-    bool isShown = false;
 
 
 
@@ -89,7 +89,6 @@ public class MonologueHandler : MonoBehaviour
         eventQueue.RemoveAt(0);
         subtitleText.text = outEvent.monologue;
         handleEventEffect(outEvent.effect);
-        isShown = true;
         if (outEvent.audioClip != null)
         {
             grandmaVoice.PlayOneShot(outEvent.audioClip);
@@ -97,9 +96,10 @@ public class MonologueHandler : MonoBehaviour
     }
 
     private void handleEventEffect(EventEffect eventEffect)
-    {
+    {   
         if (eventEffect != EventEffect.None)
         {
+            InstMegaPhone();
             player.applyEvent(eventEffect);
         }
     }
@@ -133,5 +133,14 @@ public class MonologueHandler : MonoBehaviour
         }
     }
 
+    private void InstMegaPhone()
+    {
+        megafon.SetActive(true);
+        Invoke("DeleteMegaPhone", subtitleText.text.Count() * subTime);
+    }
+    private void DeleteMegaPhone()
+    {
+        megafon.SetActive(false);
+    }
     public bool IsQueueEmpty() => eventQueue.Count() == 0;
 }
