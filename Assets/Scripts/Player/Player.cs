@@ -89,6 +89,7 @@ public class Player : MonoBehaviour
             lastSpin = Time.time;
             randomizeThings();
             displayThings();
+            guard.UpdateAngerLevel(0.1f);
         }
     }
 

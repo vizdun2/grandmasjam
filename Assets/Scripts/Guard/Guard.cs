@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Guard : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class Guard : MonoBehaviour
     private int stateChangeInterval = 3;
 
     public TMP_Text stateText;
+    public Image healthBar;
 
     // Start is called before the first frame update
     void Start()
@@ -32,10 +34,10 @@ public class Guard : MonoBehaviour
     void Update()
     {
         UpdateAngerLevel(Time.deltaTime);
-        stateText.text = $"Guard is {currentState} Anger: {angerLevel:N0}";
+        stateText.text = $"Guard is {currentState}";
     }
 
-    void UpdateAngerLevel(float delta)
+    public void UpdateAngerLevel(float delta)
     {
         switch (currentState)
         {
@@ -52,6 +54,7 @@ public class Guard : MonoBehaviour
                 break;
         }
         angerLevel = Mathf.Clamp(angerLevel, 0f, angerLimit);
+        UpdateHealthBar();
     }
 
     void ChangeState(GuardState newState)
@@ -78,5 +81,10 @@ public class Guard : MonoBehaviour
 
         }
         stateText.text = $"Guard is {currentState}";
+    }
+
+    void UpdateHealthBar()
+    {
+        healthBar.transform.localScale = new Vector3(angerLevel / angerLimit, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
     }
 }
