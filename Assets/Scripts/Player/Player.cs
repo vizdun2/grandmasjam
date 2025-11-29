@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -35,7 +34,6 @@ public class Player : MonoBehaviour
 
     public EconomyConfig economy;
     public float timeToShuffleSeconds = 60;
-
     public SpriteRenderer automatSprite1;
     public SpriteRenderer automatSprite2;
     public SpriteRenderer automatSprite3;
@@ -243,6 +241,8 @@ public class Player : MonoBehaviour
     void cashThings()
     {
         money.Money += thingsValue();
+        if (money.Money <= 0)
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameOver");
     }
 
     AutomatThing randThing()

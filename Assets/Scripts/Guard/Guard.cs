@@ -10,7 +10,8 @@ public class Guard : MonoBehaviour
         SeesPlayer,
         DoesNotSeePlayer,
         WillSeePlayer,
-        WillNotSeePlayer
+        WillNotSeePlayer,
+        Angry
     }
 
     public enum GuardAngerState
@@ -122,11 +123,29 @@ public class Guard : MonoBehaviour
         {
             noticedYouAreNotSpinning = false;
         }
-
-
+        else if (currentState == GuardState.Angry)
+        {
+            // Pokud hráč hraje správně, guard se uklidňuje i když je naštvaný
+            if (player.GetIsSpinning() && player.GetRiggedAmount() == 0)
+            {
+                angerLevel -= delta * 3; // Pomalu se uklidňuje
+            }
+            else
+            {
+                angerLevel += delta * 2; // Pokud cheatuje, ještě víc se naštve
+            }
+        }
 
         angerLevel = Mathf.Clamp(angerLevel, 0f, angerLimit);
         UpdateHealthBar();
+        if (angerLevel >= angerLimit / 2f)
+        {
+            ChangeState(GuardState.Angry);
+        }
+        if (angerLevel >= angerLimit)
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameOver");
+        }
     }
 
     void ChangeState(GuardState newState)
@@ -185,6 +204,14 @@ public class Guard : MonoBehaviour
                     stateDuration = 0;
                 }
                 break;
+            case GuardState.Angry:
+                // zůstane naštvaný, dokud mu neklesne hladina hněvu pod polovinu
+                if (angerLevel < angerLimit * .5f)
+                {
+                    ChangeState(GuardState.DoesNotSeePlayer);
+                    stateDuration = 0;
+                }
+                break;
 
         }
     }
@@ -226,6 +253,9 @@ public class Guard : MonoBehaviour
                     break;
                 case GuardState.WillNotSeePlayer:
                     newFace = faceLookLeft;
+                    break;
+                case GuardState.Angry:
+                    newFace = faceAngry;
                     break;
             }
         }
