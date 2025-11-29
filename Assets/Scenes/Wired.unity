@@ -1016,11 +1016,11 @@ MonoBehaviour:
   player: {fileID: 1369505013}
   AnimationSpeed: 0.1
   AnimatedLevers:
-  - {fileID: 21300000, guid: b9008529974531b478779c8d67f76d13, type: 3}
-  - {fileID: 21300000, guid: f0df8d3619dd9b2be81ff512c9710f3a, type: 3}
-  - {fileID: 21300000, guid: 866b4670046bd4b76afe445a5604b268, type: 3}
-  - {fileID: 21300000, guid: e317ed4a35c2732bcacdc80307a987ce, type: 3}
-  - {fileID: 21300000, guid: 041587bb8c7a620bc926f16e5bfcc9ec, type: 3}
+  - {fileID: 21300000, guid: fca8f5a52d494408998739c265d9e5ff, type: 3}
+  - {fileID: 21300000, guid: f31cfa6ae6b864808a6684ccd69ac26e, type: 3}
+  - {fileID: 21300000, guid: 3e0437f32714a4bd7808f183e9dbaba0, type: 3}
+  - {fileID: 21300000, guid: 84d20c26f937c4ac1abb2883b9d527d0, type: 3}
+  - {fileID: 21300000, guid: 5b98b4670611c4256a30caf4a59d8dd7, type: 3}
 --- !u!212 &536925149
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1062,7 +1062,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b9008529974531b478779c8d67f76d13, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fca8f5a52d494408998739c265d9e5ff, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1251,7 +1251,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &619416554
@@ -3450,7 +3450,7 @@ MonoBehaviour:
   economy:
     bet: 100
     threeOfKind: 500
-    twoOfKind: 200
+    twoOfKind: 150
     straight: 500
   timeToShuffleSeconds: 60
   automatSprite1: {fileID: 1189314550}
@@ -4000,7 +4000,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 13.3
+  m_fontSize: 26
   m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 1
