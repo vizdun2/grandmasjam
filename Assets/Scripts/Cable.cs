@@ -5,8 +5,8 @@ using UnityEngine.Rendering;
 
 public class Cable : MonoBehaviour
 {
-    public Vector3 from;
-    public Vector3 to;
+    public Vector2 from;
+    public Vector2 to;
 
     // Update is called once per frame
     void Update()
@@ -17,6 +17,6 @@ public class Cable : MonoBehaviour
         Quaternion rotation = Quaternion.FromToRotation(Vector2.right, direction);
         transform.rotation = rotation;
         transform.localScale = new Vector3(Vector2.Distance(from, to), 1, 1);
-        transform.position = from;
+        transform.position = (Vector3)from + new Vector3(0, 0, -0.15f);
     }
 }

@@ -775,7 +775,7 @@ Transform:
   m_GameObject: {fileID: 515659912}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2830,7 +2830,7 @@ Transform:
   m_GameObject: {fileID: 1319335085}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2960,6 +2960,7 @@ MonoBehaviour:
   automatSprite1: {fileID: 1189314550}
   automatSprite2: {fileID: 2085532771}
   automatSprite3: {fileID: 1022252510}
+  slotsBackground: {fileID: 1915406362}
   money: {fileID: 2049632043}
   guard: {fileID: 0}
   bananaSprite: {fileID: 21300000, guid: 0e6aa4e0fe4841b8daa70809f8e57f75, type: 3}
@@ -2969,6 +2970,12 @@ MonoBehaviour:
   peachSprite: {fileID: 21300000, guid: 73f81dc0eb14dc328b20b00b0d135ed5, type: 3}
   appleSprite: {fileID: 21300000, guid: c65adcddadfc44498a704bc7f12dba80, type: 3}
   eggplantSprite: {fileID: 21300000, guid: 3a0fdf8b972c57a089f0226d9640f408, type: 3}
+  movingThingsSprites:
+  - {fileID: 21300000, guid: 28dbe1cddcaa5ed499c5edb570244a04, type: 3}
+  - {fileID: 21300000, guid: c351f796c196ca904a0c930ae9a1fe2c, type: 3}
+  - {fileID: 21300000, guid: a0128a35ae646293a8f9677505447fde, type: 3}
+  - {fileID: 21300000, guid: 598854ff1809f54ff89c4371d7ad6b04, type: 3}
+  - {fileID: 21300000, guid: ed3f4639ba2a7bb93ac7a7a236e29ecd, type: 3}
   miniGame: {fileID: 1871444175}
   timeToSpin: 0.5
   rigged: 0

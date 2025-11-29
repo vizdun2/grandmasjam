@@ -316,7 +316,6 @@ public class Player : MonoBehaviour
                 currentCable.toPosWire = id;
                 GameObject cb = Instantiate(cablePrefab);
                 cb.transform.SetParent(miniGame);
-                cb.transform.localPosition = new Vector3(0, 0, -0.05f);
                 currentCable.cable = cb.GetComponent<Cable>();
             }
             else
@@ -350,7 +349,6 @@ public class Player : MonoBehaviour
                 currentCable.fromtFruitWire = id;
                 GameObject cb = Instantiate(cablePrefab);
                 cb.transform.SetParent(miniGame);
-                cb.transform.localPosition = new Vector3(0, 0, -0.05f);
                 currentCable.cable = cb.GetComponent<Cable>();
             }
             else
