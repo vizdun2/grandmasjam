@@ -21,8 +21,7 @@ public class Cable : MonoBehaviour
 
     void Update()
     {
-        // Vector3 to = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // Debug.Log(to);
+
         Vector2 direction = to - from;
         Quaternion rotation = Quaternion.FromToRotation(Vector2.right, direction);
 

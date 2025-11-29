@@ -13,6 +13,13 @@ public class Guard : MonoBehaviour
         WillNotSeePlayer
     }
 
+    public enum GuardAngerState
+    {
+        NotPlaying,
+        NoticeTampered,
+        TamperingWithMachine,
+        None
+    }
     public SpriteRenderer guardFaceRenderer;
     public Sprite faceSeesPlayer;
     public Sprite faceDoesNotSeePlayer;
@@ -35,6 +42,9 @@ public class Guard : MonoBehaviour
     public float turnFrameDuration = 0.07f;
     bool isAnimating = false;
     Coroutine stateChangeCoroutine;
+
+    public TextMeshProUGUI stateText;
+    GuardAngerState angerReason;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,9 +53,29 @@ public class Guard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        HandleAngerState();
         UpdateAngerLevel(Time.deltaTime);
         CycleState();
         UpdateGuardFace();
+    }
+
+    private void HandleAngerState()
+    {
+        switch (angerReason)
+        {
+            case GuardAngerState.NotPlaying:
+                stateText.text = "Guard sees you are not playing";
+                break;
+            case GuardAngerState.NoticeTampered:
+                stateText.text = "Guard suspects the machine has been tampered with";
+                break;
+            case GuardAngerState.TamperingWithMachine:
+                stateText.text = "Guard sees you doing something suspicious!!!";
+                break;
+            case GuardAngerState.None:
+                stateText.text = "";
+                break;
+        }
     }
 
     public void UpdateAngerLevel(float delta)
@@ -56,6 +86,7 @@ public class Guard : MonoBehaviour
             {
                 angerLevel += delta * 8;
                 player.GetComponent<MonologueHandler>().PlayFuckup(FuckupMonologueCall.NoticeGuardNoticeYouPlayingMinigame);
+                angerReason = GuardAngerState.TamperingWithMachine;
             }
             if (player.GetIsSpinning())
             { // bude nasranej na to ze cheatujes maty
@@ -67,12 +98,16 @@ public class Guard : MonoBehaviour
                 }
                 else
                     angerLevel -= delta * 4;
+
+                if ((int)angerReason < (int)GuardAngerState.NoticeTampered)
+                    angerReason = GuardAngerState.NoticeTampered;
             }
             else
             {
-
                 if (!noticedYouAreNotSpinning)
                 {
+                    if ((int)angerReason < (int)GuardAngerState.NotPlaying)
+                        angerReason = GuardAngerState.NotPlaying;
                     noticedYouAreNotSpinning = true;
                     noticedYouAreNotSpinningAt = Time.time;
                 }
