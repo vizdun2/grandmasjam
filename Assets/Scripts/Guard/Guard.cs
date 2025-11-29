@@ -136,6 +136,6 @@ public class Guard : MonoBehaviour
 
     void UpdateHealthBar()
     {
-        healthBar.transform.localScale = new Vector3(angerLevel / angerLimit, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
+        healthBar.transform.localScale = new Vector2(angerLevel / angerLimit, healthBar.transform.localScale.y);
     }
 }
