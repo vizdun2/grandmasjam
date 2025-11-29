@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     }
 
     public EconomyConfig economy;
+    public float timeToShuffleSeconds = 60;
 
     public SpriteRenderer automatSprite1;
     public SpriteRenderer automatSprite2;
@@ -92,6 +93,8 @@ public class Player : MonoBehaviour
     private int spinCountAtRigged = 0;
     private float lastPlayedTutorial = 0;
 
+    private float lastShuffledCables = 0;
+
     void Start()
     {
         monologueHandler = GetComponent<MonologueHandler>();
@@ -151,6 +154,9 @@ public class Player : MonoBehaviour
                     currentCable.cable.from = posWires[(int)currentCable.toPosWire].gameObject.transform.position;
             }
         }
+
+        if (Time.time - lastShuffledCables > timeToShuffleSeconds)
+            shuffleCables();
 
 
         if (Input.GetKeyDown("space"))
