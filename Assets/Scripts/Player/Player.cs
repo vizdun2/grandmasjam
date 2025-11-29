@@ -279,6 +279,7 @@ public class Player : MonoBehaviour
 
     public void closetOpened()
     {
+        playedTutorial[(int)TutorialMonologueCall.NoticeCouldOpenCloset] = true;
         Tutorial(TutorialMonologueCall.EnterMinigame);
         isPlayingMinigame = !isPlayingMinigame;
         playingMinigameFor = 0;
