@@ -46,12 +46,18 @@ public class Guard : MonoBehaviour
         if (currentState == GuardState.SeesPlayer)
         {
             if (player.GetHowLongIsPlayingMinigame() > 2f)
+            {
                 angerLevel += delta * 8;
+                player.Tutorial(TutorialMonologueCall.NoticeGuardNoticeYouPlayingMinigame);
+            }
             if (player.GetIsSpinning())
             { // bude nasranej na to ze cheatujes maty
                 noticedYouAreNotSpinning = false;
                 if (player.GetRiggedAmount() > 0)
+                {
                     angerLevel += delta * 4 * player.GetRiggedAmount();
+                    player.Tutorial(TutorialMonologueCall.NoticeGuardNoticeMinigameEffect);
+                }
                 else
                     angerLevel -= delta * 4;
             }
@@ -64,7 +70,10 @@ public class Guard : MonoBehaviour
                     noticedYouAreNotSpinningAt = Time.time;
                 }
                 if (Time.time - noticedYouAreNotSpinningAt > 5f)
+                {
+                    player.Tutorial(TutorialMonologueCall.NoticeGuardNoticeNotPlaying);
                     angerLevel += delta * 2;
+                }
             }
         }
         else if (currentState == GuardState.DoesNotSeePlayer)

@@ -3,8 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 using Random = UnityEngine.Random;
+
+
+
+public enum TutorialMonologueCall
+{
+    NoticeCouldOpenCloset,
+    EnterMinigame,
+    NoticeMinigameEffect,
+    NoticeGuardNoticeNotPlaying,
+    NoticeGuardNoticeMinigameEffect,
+    NoticeGuardNoticeYouPlayingMinigame,
+}
+
 public class Player : MonoBehaviour
 {
     public SpriteRenderer automatSprite1;
@@ -20,6 +34,7 @@ public class Player : MonoBehaviour
     public Sprite peachSprite;
     public Sprite appleSprite;
     public Sprite eggplantSprite;
+    private bool[] playedTutorial = new bool[6];
 
     public Sprite[] movingThingsSprites;
 
@@ -62,10 +77,15 @@ public class Player : MonoBehaviour
         public bool up;
     }
 
+    private MonologueHandler monologueHandler;
+    private int spinCount = 0;
+    private int spinCountAtRigged = 0;
+    private float lastPlayedTutorial = 0;
+
     void Start()
     {
+        monologueHandler = GetComponent<MonologueHandler>();
         miniGame.gameObject.SetActive(isPlayingMinigame);
-
         randomizeThings();
         shuffleCables();
         displayThings();
@@ -84,6 +104,10 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if (Time.time > 10)
+        {
+            Tutorial(TutorialMonologueCall.NoticeCouldOpenCloset);
+        }
         if (isSpinning)
         {
             slotSpin();
@@ -98,6 +122,9 @@ public class Player : MonoBehaviour
                 automatSprite2.enabled = true;
                 automatSprite3.enabled = true;
                 cashThings();
+                if (spinCount - spinCountAtRigged > 1 && GetRiggedAmount() > 0)
+                    Tutorial(TutorialMonologueCall.NoticeMinigameEffect);
+                spinCount++;
             }
         }
 
@@ -252,9 +279,14 @@ public class Player : MonoBehaviour
 
     public void closetOpened()
     {
+        Tutorial(TutorialMonologueCall.EnterMinigame);
         isPlayingMinigame = !isPlayingMinigame;
         playingMinigameFor = 0;
         miniGame.gameObject.SetActive(isPlayingMinigame);
+        if (GetRiggedAmount() > 0)
+        {
+            spinCountAtRigged = spinCount;
+        }
     }
 
     class CableConnection
@@ -378,6 +410,17 @@ public class Player : MonoBehaviour
         finishCurrentCable();
     }
 
+
+    public void Tutorial(TutorialMonologueCall tutorial)
+    {
+        if (!playedTutorial[(int)tutorial] && Time.time - lastPlayedTutorial > 1f)
+        {
+            lastPlayedTutorial = Time.time;
+            playedTutorial[(int)tutorial] = true;
+            monologueHandler.PlayTutorial(tutorial);
+        }
+    }
+
     public bool GetIsSpinning() => isSpinning;
 
     public bool GetIsPlayingMinigame() => isPlayingMinigame;
@@ -387,6 +430,8 @@ public class Player : MonoBehaviour
     {
         return cableFruitIndex.Count();
     }
+
+
 
 
 
