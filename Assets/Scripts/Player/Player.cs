@@ -5,7 +5,6 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
-
 public class Player : MonoBehaviour
 {
     public SpriteRenderer automatSprite1;
@@ -21,7 +20,7 @@ public class Player : MonoBehaviour
     public Sprite peachSprite;
     public Sprite appleSprite;
     public Sprite eggplantSprite;
-    
+
     public Sprite[] movingThingsSprites;
 
     public Transform miniGame;
@@ -49,6 +48,8 @@ public class Player : MonoBehaviour
     bool isSpinning = false;
 
     private bool isPlayingMinigame = false;
+
+    private float playingMinigameFor = 0;
 
     public Switch[] switchObjects;
     public Transform[] barSprites;
@@ -90,7 +91,7 @@ public class Player : MonoBehaviour
             {
                 isSpinning = false;
                 slotsBackground.sprite = movingThingsSprites[0];
-                
+
                 randomizeThings();
                 displayThings();
                 automatSprite1.enabled = true;
@@ -113,8 +114,12 @@ public class Player : MonoBehaviour
             }
         }
 
+
         if (Input.GetKeyDown("space"))
             shuffleCables();
+
+        if (isPlayingMinigame)
+            playingMinigameFor += Time.deltaTime;
     }
 
     void randomizeThings()
@@ -231,7 +236,7 @@ public class Player : MonoBehaviour
 
         return (sum == 0) ? 0 : (sum / totalWeights());
     }
-    
+
     public void leverPulled()
     {
         if (!isSpinning && money.Money >= 100)
@@ -248,6 +253,7 @@ public class Player : MonoBehaviour
     public void closetOpened()
     {
         isPlayingMinigame = !isPlayingMinigame;
+        playingMinigameFor = 0;
         miniGame.gameObject.SetActive(isPlayingMinigame);
     }
 
@@ -371,4 +377,17 @@ public class Player : MonoBehaviour
 
         finishCurrentCable();
     }
+
+    public bool GetIsSpinning() => isSpinning;
+
+    public bool GetIsPlayingMinigame() => isPlayingMinigame;
+
+    public float GetHowLongIsPlayingMinigame() => playingMinigameFor;
+    public int GetRiggedAmount()
+    {
+        return cableFruitIndex.Count();
+    }
+
+
+
 }

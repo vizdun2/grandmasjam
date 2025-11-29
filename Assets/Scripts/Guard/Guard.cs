@@ -19,40 +19,61 @@ public class Guard : MonoBehaviour
     public float angerLimit = 100f;
 
     public Player player;
-    private int stateChangeInterval = 3;
 
     public TMP_Text stateText;
-    public Image healthBar;
+    public GameObject healthBar;
+
+    bool noticedYouAreNotSpinning = false;
+    float noticedYouAreNotSpinningAt;
+
+    float stateDuration = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("cycleState", stateChangeInterval, stateChangeInterval);
     }
 
     // Update is called once per frame
     void Update()
     {
         UpdateAngerLevel(Time.deltaTime);
+        CycleState();
         stateText.text = $"Guard is {currentState}";
     }
 
     public void UpdateAngerLevel(float delta)
     {
-        switch (currentState)
+        if (currentState == GuardState.SeesPlayer)
         {
-            case GuardState.SeesPlayer:
-                angerLevel += delta * 2;
-                break;
-            case GuardState.DoesNotSeePlayer:
-                angerLevel -= delta;
-                break;
-            case GuardState.WillSeePlayer:
-                break;
-            case GuardState.WillNotSeePlayer:
-                angerLevel -= delta * 0.5f;
-                break;
+            if (player.GetHowLongIsPlayingMinigame() > 2f)
+                angerLevel += delta * 8;
+            if (player.GetIsSpinning())
+            { // bude nasranej na to ze cheatujes maty
+                noticedYouAreNotSpinning = false;
+                if (player.GetRiggedAmount() > 0)
+                    angerLevel += delta * 4 * player.GetRiggedAmount();
+                else
+                    angerLevel -= delta * 4;
+            }
+            else
+            {
+
+                if (!noticedYouAreNotSpinning)
+                {
+                    noticedYouAreNotSpinning = true;
+                    noticedYouAreNotSpinningAt = Time.time;
+                }
+                if (Time.time - noticedYouAreNotSpinningAt > 5f)
+                    angerLevel += delta * 2;
+            }
         }
+        else if (currentState == GuardState.DoesNotSeePlayer)
+        {
+            noticedYouAreNotSpinning = false;
+        }
+
+
+
         angerLevel = Mathf.Clamp(angerLevel, 0f, angerLimit);
         UpdateHealthBar();
     }
@@ -62,21 +83,42 @@ public class Guard : MonoBehaviour
         currentState = newState;
     }
 
-    void cycleState()
+    void CycleState()
     {
+        stateDuration += Time.deltaTime;
+
         switch (currentState)
         {
             case GuardState.SeesPlayer:
-                ChangeState(GuardState.WillNotSeePlayer);
+                if (!noticedYouAreNotSpinning)
+                {
+                    if (stateDuration > 10)
+                    {
+                        ChangeState(GuardState.WillNotSeePlayer);
+                        stateDuration = 0;
+                    }
+                }
                 break;
             case GuardState.DoesNotSeePlayer:
-                ChangeState(GuardState.WillSeePlayer);
+                if (stateDuration > 10)
+                {
+                    ChangeState(GuardState.WillSeePlayer);
+                    stateDuration = 0;
+                }
                 break;
             case GuardState.WillSeePlayer:
-                ChangeState(GuardState.SeesPlayer);
+                if (stateDuration > 2)
+                {
+                    ChangeState(GuardState.SeesPlayer);
+                    stateDuration = 0;
+                }
                 break;
             case GuardState.WillNotSeePlayer:
-                ChangeState(GuardState.DoesNotSeePlayer);
+                if (stateDuration > 2)
+                {
+                    ChangeState(GuardState.DoesNotSeePlayer);
+                    stateDuration = 0;
+                }
                 break;
 
         }
