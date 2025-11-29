@@ -179,6 +179,10 @@ public class Guard : MonoBehaviour
         if (guardFaceRenderer != null && newFace != null)
         {
             guardFaceRenderer.sprite = newFace;
+
+            Color color = guardFaceRenderer.color;
+            color.a = 0.9f;
+            guardFaceRenderer.color = color;
         }
     }
 }
