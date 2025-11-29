@@ -13,7 +13,6 @@ public enum TutorialMonologueCall
     NoticeCouldOpenCloset,
     EnterMinigame,
     NoticeMinigameEffect,
-
 }
 
 public enum FuckupMonologueCall
@@ -104,6 +103,9 @@ public class Player : MonoBehaviour
     private float timeToEventSeconds = 30;
     public int meanTimeToEvent = 2;
 
+    public GameObject explosionPrefab;
+    public GameObject sparkPrefab;
+    public Transform[] doorExplosionSpawnpoints;
 
     void Start()
     {
@@ -172,6 +174,9 @@ public class Player : MonoBehaviour
         {
             shuffleCables();
             lastShuffledCables = Time.time;
+            Instantiate(explosionPrefab, doorExplosionSpawnpoints[Random.Range(0, doorExplosionSpawnpoints.Length)]);
+            if (isPlayingMinigame)
+                closetOpened();
         }
 
 
@@ -229,13 +234,14 @@ public class Player : MonoBehaviour
 
         return 0;
     }
+
     void precashThings()
     {
         money.Money -= economy.bet;
     }
+
     void cashThings()
     {
-
         money.Money += thingsValue();
     }
 
@@ -321,6 +327,8 @@ public class Player : MonoBehaviour
         }
     }
 
+    public ShityAnime machine;
+
     public void closetOpened()
     {
         playedTutorial[(int)TutorialMonologueCall.NoticeCouldOpenCloset] = true;
@@ -331,6 +339,21 @@ public class Player : MonoBehaviour
         if (GetRiggedAmount() > 0)
         {
             spinCountAtRigged = spinCount;
+        }
+
+        if (isPlayingMinigame)
+        {
+            machine.backwards = false;
+            machine.endOnEnd = true;
+            machine.loop = false;
+            machine.Animate(true);
+        }
+        else
+        {
+            machine.backwards = true;
+            machine.endOnEnd = false;
+            machine.loop = false;
+            machine.Animate(true);
         }
     }
 
@@ -375,7 +398,6 @@ public class Player : MonoBehaviour
             shuffledWires[i] = wireBag[idx];
             wireBag.RemoveAt(idx);
         }
-
     }
 
     void finishCurrentCable()
@@ -413,6 +435,7 @@ public class Player : MonoBehaviour
         else if (currentCable.toPosWire == null && !cableWireIndex.ContainsKey(id))
         {
             currentCable.toPosWire = id;
+            Instantiate(sparkPrefab, posWires[id].transform);
         }
         else
         {
@@ -446,6 +469,7 @@ public class Player : MonoBehaviour
         else if (currentCable.fromtFruitWire == null && !cableFruitIndex.ContainsKey(id))
         {
             currentCable.fromtFruitWire = id;
+            Instantiate(sparkPrefab, fruitWires[id].transform);
         }
         else
         {
@@ -492,11 +516,12 @@ public class Player : MonoBehaviour
             pnls.Add(money.Money - 1000);
         }
 
-        Debug.Log($"Average PnL with this config and wires: ${pnls.Average()}"); money.Money = oldmoney;
-
+        Debug.Log($"Average PnL with this config and wires: ${pnls.Average()}");
+        money.Money = oldmoney;
     }
 
     private int duchodLevels = 500;
+
     public void applyEvent(EventEffect me)
     {
         switch (me)
