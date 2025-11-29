@@ -53,6 +53,6 @@ public class MonologueHandler : MonoBehaviour
     public void PlayTutorial(TutorialMonologueCall call)
     {
         pushTutorialSubs(call);
-        grandmaVoice.PlayOneShot(tutorialClips[(int)call]);
+        // grandmaVoice.PlayOneShot(tutorialClips[(int)call]);
     }
 }

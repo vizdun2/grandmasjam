@@ -3311,13 +3311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9259e0e1d80bc5b904f02fbc67915f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutorialClips:
-  - {fileID: 8300000, guid: 3847fefd22952cdc1aa38c08243ad2b3, type: 3}
-  - {fileID: 8300000, guid: 8c382cf9b52d6104a87f8c1824369a7d, type: 3}
-  - {fileID: 8300000, guid: cb66efc5273ec8aae852e3c68b8e110f, type: 3}
-  - {fileID: 8300000, guid: 08bb57f5f645f2291b504af05187f807, type: 3}
-  - {fileID: 8300000, guid: f3464d28624d0ba6c8bd0154bec445e4, type: 3}
-  - {fileID: 8300000, guid: 28c208f60b4dd7388a3b270491c9daca, type: 3}
+  tutorialClips: []
   subtitleText: {fileID: 1518974608}
 --- !u!82 &1369505016
 AudioSource:
