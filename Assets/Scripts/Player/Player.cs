@@ -8,7 +8,6 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 
-
 public enum TutorialMonologueCall
 {
     NoticeCouldOpenCloset,
@@ -21,6 +20,17 @@ public enum TutorialMonologueCall
 
 public class Player : MonoBehaviour
 {
+    [System.Serializable]
+    public class EconomyConfig
+    {
+        public int bet = 100;
+        public int threeOfKind = 500;
+        public int twoOfKind = 200;
+        public int straight = 500;
+    }
+
+    public EconomyConfig economy;
+
     public SpriteRenderer automatSprite1;
     public SpriteRenderer automatSprite2;
     public SpriteRenderer automatSprite3;
@@ -108,6 +118,7 @@ public class Player : MonoBehaviour
         {
             Tutorial(TutorialMonologueCall.NoticeCouldOpenCloset);
         }
+
         if (isSpinning)
         {
             slotSpin();
@@ -147,6 +158,9 @@ public class Player : MonoBehaviour
 
         if (isPlayingMinigame)
             playingMinigameFor += Time.deltaTime;
+
+        if (Input.GetKeyDown("backspace"))
+            debugStats();
     }
 
     void randomizeThings()
@@ -176,24 +190,23 @@ public class Player : MonoBehaviour
         setSpriteToThing(automatSprite3, things[2]);
     }
 
-    void cashThings()
+    int thingsValue()
     {
         if (things[0] == things[1] && things[1] == things[2])
-        {
-            money.Money += 100 * ((int)things[0] + 1);
-        }
-        else if ((int)things[0] == (int)(things[1] - 1) && (int)things[0] == (int)(things[2] - 2))
-        {
-            money.Money += 100 * ((int)things[0] + 1);
-        }
+            return economy.threeOfKind;
+        else if (((int)things[0] == (int)(things[1] - 1) && (int)things[0] == (int)(things[2] - 2)) ||
+                 ((int)things[0] == (int)(things[1] + 1) && (int)things[0] == (int)(things[2] + 2)))
+            return economy.straight;
         else if (things[0] == things[1] || things[0] == things[2] || things[1] == things[2])
-        {
-            money.Money += 50 * ((int)things[0] + 1);
-        }
-        else
-        {
-            money.Money -= 100;
-        }
+            return economy.twoOfKind;
+
+        return 0;
+    }
+
+    void cashThings()
+    {
+        money.Money -= economy.bet;
+        money.Money += thingsValue();
     }
 
     AutomatThing randThing()
@@ -427,13 +440,27 @@ public class Player : MonoBehaviour
     public bool GetIsPlayingMinigame() => isPlayingMinigame;
 
     public float GetHowLongIsPlayingMinigame() => playingMinigameFor;
+
     public int GetRiggedAmount()
     {
         return cableFruitIndex.Count();
     }
 
+    void debugStats()
+    {
+        int oldmoney = money.Money;
+        List<int> pnls = new List<int>();
 
+        for (int i = 0; i < 10_000; i++)
+        {
+            money.Money = 1000;
+            randomizeThings();
+            cashThings();
+            pnls.Add(money.Money - 1000);
+        }
 
+        money.Money = oldmoney;
 
-
+        Debug.Log($"Average PnL with this config and wires: ${pnls.Average()}");
+    }
 }

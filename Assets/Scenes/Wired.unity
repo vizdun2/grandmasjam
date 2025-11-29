@@ -3232,6 +3232,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7fc731ff8a4ff777a1e27989d337dc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  economy:
+    bet: 100
+    threeOfKind: 500
+    twoOfKind: 200
+    straight: 500
   automatSprite1: {fileID: 1189314550}
   automatSprite2: {fileID: 2085532771}
   automatSprite3: {fileID: 1022252510}
